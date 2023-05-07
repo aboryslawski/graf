@@ -32,7 +32,9 @@ document.removeEventListener("mousemove", ustaw_kamere_mysz, false);
 
 //texture1 *****************************************************************************
 const texture1 = gl.createTexture();
+//const texture2 = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, texture1);
+//gl.bindTexture(gl.TEXTURE_2D, texture2);
 const level = 0;
 const internalFormat = gl.RGBA;
 const width = 1;
@@ -47,6 +49,7 @@ gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
 const image = new Image();
 image.onload = function() {
     gl.bindTexture(gl.TEXTURE_2D, texture1);
+//    gl.bindTexture(gl.TEXTURE_2D, texture2);
     gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,srcFormat, srcType, image);
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
@@ -56,9 +59,30 @@ image.onload = function() {
 };
 image.crossOrigin = "";
 image.src = "https://cdn.pixabay.com/photo/2013/09/22/19/14/brick-wall-185081_960_720.jpg";
+
+//texture2 *****************************************************************************
+const texture2 = gl.createTexture();
+//const texture2 = gl.createTexture();
+//gl.bindTexture(gl.TEXTURE_2D, texture1);
+gl.bindTexture(gl.TEXTURE_2D, texture2);
+gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
+        width, height, border, srcFormat, srcType,
+        pixel);
+const image2 = new Image();
+image2.onload = function() {
+//    gl.bindTexture(gl.TEXTURE_2D, texture1);
+    gl.bindTexture(gl.TEXTURE_2D, texture2);
+    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,srcFormat, srcType, image2);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+};
+image2.crossOrigin = "";
+image2.src = "https://cdn.pixabay.com/photo/2023/04/18/20/21/flowers-7935942_1280.jpg"
+
 //****************************************************************
-
-
 
 console.log("WebGL version: " + gl.getParameter(gl.VERSION));
 console.log("GLSL version: " + gl.getParameter(gl.SHADING_LANGUAGE_VERSION));
@@ -100,6 +124,7 @@ const program = gl.createProgram();
                    in vec2 TexCoord;
                    out vec4 frag_color;
                    uniform sampler2D texture1;
+                   uniform sampler2D texture2;
                    void main(void)
                 {
 			                      frag_color = vec4(Color,1.0);
@@ -210,6 +235,7 @@ const vertices =
 let startTime=0;
 let elapsedTime=0;
 gl.uniform1i(gl.getUniformLocation(program, "texture1"), 0);
+gl.uniform1i(gl.getUniformLocation(program, "texture2"), 1);
 function draw(){
     elapsedTime = performance.now() - startTime;
     startTime = performance.now();
@@ -225,12 +251,13 @@ function draw(){
 	gl.clear(gl.COLOR_BUFFER_BIT);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture1);
+    gl.drawArrays(gl.TRIANGLES, 0, 12);
 //    gl.activeTexture(gl.TEXTURE1);
-//    gl.bindTexture(gl.TEXTURE_2D, texture2);
-    gl.drawArrays(gl.TRIANGLES, 0, 36);
+    gl.bindTexture(gl.TEXTURE_2D, texture2);
+    gl.drawArrays(gl.TRIANGLES, 12, 24);
 	//gl.useProgram(program);
-	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	gl.drawArrays(gl.TRIANGLES, 0, n_draw);
+//	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+//	gl.drawArrays(gl.TRIANGLES, 0, n_draw);
 window.requestAnimationFrame(draw);
 }
 
