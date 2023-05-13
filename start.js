@@ -424,3 +424,47 @@ function ustaw_kamere() {
 		cameraFront = glm.normalize(front);
 	}
 }
+function StereoProjection(_left, _right, _bottom, _top, _near, _far, _zero_plane, _dist, _eye)
+{
+// Perform the perspective projection for one eye's subfield.
+// The projection is in the direction of the negative z-axis.
+// _left=-6.0;
+// _right=6.0;
+// _bottom=-4.8;
+// _top=4.8;
+// [default: -6.0, 6.0, -4.8, 4.8]
+// left, right, bottom, top = the coordinate range, in the plane of zero parallax setting,
+// which will be displayed on the screen.
+// The ratio between (right-left) and (top-bottom) should equal the aspect
+// ratio of the display.
+// _near=6.0;
+// _far=-20.0;
+// [default: 6.0, -6.0]
+// near, far = the z-coordinate values of the clipping planes.
+// _zero_plane=0.0;
+// [default: 0.0]
+// zero_plane = the z-coordinate of the plane of zero parallax setting.
+// [default: 14.5]
+// _dist=10.5;
+// dist = the distance from the center of projection to the plane of zero parallax.
+// [default: -0.3]
+// _eye=-0.3;
+// eye = half the eye separation; positive for the right eye subfield,
+// negative for the left eye subfield.
+let _dx = _right - _left;
+let _dy = _top - _bottom;
+let _xmid = (_right + _left) / 2.0;
+let _ymid = (_top + _bottom) / 2.0;
+let _clip_near = _dist + _zero_plane - _near;
+let _clip_far = _dist + _zero_plane - _far;
+let _n_over_d = (_clip_near / _dist);
+let _topw = _n_over_d * _dy / 2.0;
+let _bottomw = -_topw;
+let _rightw = _n_over_d * (_dx / 2.0 - _eye);
+let _leftw = _n_over_d * (-_dx / 2.0 - _eye);/
+const proj = mat4.create();
+mat4.frustum(proj, _leftw, _rightw, _bottomw, _topw, _clip_near, _clip_far)
+mat4.translate(proj, proj, [-_xmid - _eye, -_ymid, 0]);
+let uniProj = gl.getUniformLocation(program, 'proj');
+gl.uniformMatrix4fv( uniProj, false, proj);
+}
