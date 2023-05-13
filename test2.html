@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 	<head>
 		<title>Wstęp WebGL w HTML5</title>
 		<script type="text/javascript" src="start.js"> </script>
@@ -25,6 +24,7 @@
 </head>
 
 <body onload="start();">
+<input type="file" onchange="loadFile(this.files[0])">
 	<canvas width="1920" height="1080" id="my_canvas" ></canvas>
     <div>FPS: <span id="fps"></span></div>
 </body>
