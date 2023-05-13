@@ -29,6 +29,7 @@ document.removeEventListener("mousemove", ustaw_kamere_mysz, false);
 	return;
 }
 
+let tryb = 1;
 
 //texture1 *****************************************************************************
 const texture1 = gl.createTexture();
@@ -249,15 +250,71 @@ function draw(){
 	ustaw_kamere();
 	gl.clearColor(0, 0, 0, 1);
 	gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texture1);
-    gl.drawArrays(gl.TRIANGLES, 0, 12);
-//    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, texture2);
-    gl.drawArrays(gl.TRIANGLES, 12, 24);
-	//gl.useProgram(program);
-//	gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-//	gl.drawArrays(gl.TRIANGLES, 0, n_draw);
+
+
+    switch (tryb) {
+        case 1: //normal
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            // gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, texture1);
+            gl.drawArrays(gl.TRIANGLES, 0, 12);
+            // gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture2);
+            gl.drawArrays(gl.TRIANGLES, 12, 24);
+            break;
+        case 2: //stereo
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            StereoProjection(-6, 6, -4.8, 4.8, 12.99, -100, 0, 13, -0.05);
+            gl.colorMask(true,false,false,false);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, texture1);
+            gl.drawArrays(gl.TRIANGLES, 0, 12);
+            // gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture2);
+            gl.drawArrays(gl.TRIANGLES, 12, 24);
+
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+            StereoProjection(-6, 6, -4.8, 4.8, 12.99, -100, 0, 13, 0.05);
+            gl.colorMask(false,false,true,false);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, texture1);
+            gl.drawArrays(gl.TRIANGLES, 0, 12);
+            // gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture2);
+            gl.drawArrays(gl.TRIANGLES, 12, 24);
+
+            gl.colorMask(true,true,true,true);
+
+            break;
+        case 3:
+            gl.viewport(0, 0, canvas.width/2, canvas.height);
+            StereoProjection(-6, 6, -4.8, 4.8, 12.99, -100, 0, 13, -0.1);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, texture1);
+            gl.drawArrays(gl.TRIANGLES, 0, 12);
+            // gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture2);
+            gl.drawArrays(gl.TRIANGLES, 12, 24);
+
+            gl.viewport(canvas.width/2, 0, canvas.width/2, canvas.height);
+            StereoProjection(-6, 6, -4.8, 4.8, 12.99, -100, 0, 13, 0.1);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, texture1);
+            gl.drawArrays(gl.TRIANGLES, 0, 12);
+            // gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, texture2);
+            gl.drawArrays(gl.TRIANGLES, 12, 24);
+            break;
+    }
+
+
+
+ustaw_kamere();
 window.requestAnimationFrame(draw);
 }
 
@@ -268,6 +325,8 @@ window.requestAnimationFrame(draw);
 //    alert("x ="+x);
 //    alert("y ="+y);
 // });
+
+
 
 // Add the event listeners for keydown, keyup
 window.addEventListener('keydown', function(event) {
@@ -289,6 +348,19 @@ window.addEventListener('keydown', function(event) {
 				gl.disable(gl.DEPTH_TEST);
 			else
 				gl.enable(gl.DEPTH_TEST);
+break;
+    case 84: // T
+      tryb = 1;
+        console.log('tryb 1');
+    break;
+    case 89: // Y
+      tryb = 2;
+        console.log('tryb 2');
+    break;
+    case 85: // u
+        console.log('tryb 3');
+      tryb = 3;
+    break;
   }
 }, false);
 
