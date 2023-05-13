@@ -423,7 +423,6 @@ function ustaw_kamere() {
 
 		cameraFront = glm.normalize(front);
 	}
-}
 function StereoProjection(_left, _right, _bottom, _top, _near, _far, _zero_plane, _dist, _eye)
 {
 // Perform the perspective projection for one eye's subfield.
@@ -461,10 +460,11 @@ let _n_over_d = (_clip_near / _dist);
 let _topw = _n_over_d * _dy / 2.0;
 let _bottomw = -_topw;
 let _rightw = _n_over_d * (_dx / 2.0 - _eye);
-let _leftw = _n_over_d * (-_dx / 2.0 - _eye);/
+let _leftw = _n_over_d * (-_dx / 2.0 - _eye);
 const proj = mat4.create();
 mat4.frustum(proj, _leftw, _rightw, _bottomw, _topw, _clip_near, _clip_far)
 mat4.translate(proj, proj, [-_xmid - _eye, -_ymid, 0]);
 let uniProj = gl.getUniformLocation(program, 'proj');
 gl.uniformMatrix4fv( uniProj, false, proj);
+}
 }
